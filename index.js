@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const Note = require('./models/note')
 
 app.use(cors())
 app.use(express.static('build'))
@@ -70,8 +72,10 @@ app.post('/api/notes', (request, response) => {
     response.json(note)
 })
 
-app.get('/api/notes', (req, res) => {
-    res.json(notes)
+app.get('/api/notes', (request, response) => {
+    Note.find({}).then(notes => {
+        response.json(notes)
+    })
 })
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -98,7 +102,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
